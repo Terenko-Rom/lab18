@@ -1,30 +1,24 @@
-import pickle
+import shelve
 
-# Генерація геометричної прогресії
-def generate_geometric_progression(b1, q, n):
-    progression = [b1 * (q ** i) for i in range(n)]
-    return progression
-
-# Запит у користувача кількості елементів
-n = int(input("Введіть кількість елементів геометричної прогресії: "))
+# Користувач задає кількість елементів прогресії
+N = int(input("Введіть кількість елементів геометричної прогресії: "))
 b1 = 2.5
 q = 1.9
 
-# Генерація списку
-progression = generate_geometric_progression(b1, q, n)
-print("Початковий список:", progression)
+# Генеруємо геометричну прогресію
+progression = [b1 * (q ** i) for i in range(N)]
 
-# Видалення перших 3 і останніх 3 елементів
-trimmed_progression = progression[3:-3]
+# Видаляємо перші 3 і останні 3 елементи
+if len(progression) > 6:
+    trimmed_list = progression[3:-3]
+else:
+    trimmed_list = []
 
-# Збереження у файл
-with open("list.bin", "wb") as file:
-    pickle.dump(trimmed_progression, file)
+# Збереження списку в файл
+with shelve.open("list.bin") as db:
+    db["progression"] = trimmed_list
 
-print("Список збережено у файл list.bin.")
-
-# Зчитування з файлу та виведення
-with open("list.bin", "rb") as file:
-    loaded_progression = pickle.load(file)
-
-print("Список із файлу:", loaded_progression)
+# Читання списку з файлу і його виведення
+with shelve.open("list.bin") as db:
+    saved_list = db["progression"]
+    print("Список із файлу:", saved_list)

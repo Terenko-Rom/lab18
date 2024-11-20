@@ -1,22 +1,16 @@
-import json
+import shelve
 employees = {
-    "Іванов": 12,
-    "Петров": 18,
-    "Сидоров": 20,
-    "Коваленко": 15,
-    "Ткаченко": 19,
-    "Мельник": 21,
-    "Шевченко": 25,
-    "Гриценко": 22,
-    "Бойко": 14,
-    "Довженко": 23,
+    "Іваненко": 18,
+    "Петренко": 21,
+    "Сидоренко": 19,
+    "Коваленко": 22,
+    "Шевченко": 20
 }
-with open("employees.json", "w", encoding="utf-8") as file:
-    json.dump(employees, file, ensure_ascii=False)
-print("Словник збережено у файл employees.json.")
-with open("employees.json", "r", encoding="utf-8") as file:
-    loaded_employees = json.load(file)
-top_employees = {name: hours for name, hours in loaded_employees.items() if hours > 20}
-print("Працівники, які відпрацювали більше 20 годин:")
-for name, hours in top_employees.items():
-    print(f"{name}: {hours} год.")
+with shelve.open("employees.db") as db:
+    db["employees"] = employees
+with shelve.open("employees.db") as db:
+    saved_employees = db["employees"]
+    print("Працівники, які відпрацювали більше 20 годин:")
+    for name, hours in saved_employees.items():
+        if hours > 20:
+            print(f"{name}: {hours} годин")
